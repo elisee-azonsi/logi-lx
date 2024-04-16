@@ -1,0 +1,118 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %} Liste complète {% endblock %}
+
+{% block body %}
+<body>
+ <h1 style="text-align: center">FEUILLE DE PRÉSENCE</h1>
+
+    {% include'manager/_search_data.html.twig' %}
+
+<form class="table" action="{{ path('app.manager.shifts.remove') }}" method="post">
+    <div class="table-responsive" style="zoom: 80%">
+    <table border="1" class="table table-bordered border-warning table-striped">
+        <thead>
+        <tr>
+            <th class="text-center" scope="col">DATE</th>
+            <th class="text-center" scope="col">EMPLOYÉ</th>
+            <th class="text-center" scope="col">CHANTIER</th>
+            <th class="text-center" scope="col">H. DE DEBUT</th>
+            <th class="text-center" scope="col">H. DE FIN</th>
+            <th class="text-center" scope="col">H. NORMALES</th>
+            <th class="text-center" scope="col">H. SUPP.</th>
+            <th class="text-center" scope="col">H. NUIT</th>
+            <th class="text-center" scope="col">DIMANCHE+<br>FERIE</th>
+            <th class="text-center" scope="col">Maladie</th>
+            <th class="text-center" scope="col">CP</th>
+            <th class="text-center" scope="col">Autre</th>
+            <th class="text-center" scope="col">NOMBRE TOTAL<br> D'HEURES</th>
+            <th class="text-center" scope="col"><button  type="submit"  class="btn btn-danger" name="submit" id="checkbutton" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"></path>
+                    </svg></button></th>
+            <th><input name="checkall" type="checkbox" id="checkall" onclick="checkAll()" class="select-all"></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for shifts in shift|reverse %}
+
+              <tr>
+                <td class="text-center">{{ shifts.date|date('d/m/Y') }}</td>
+                <th class="text-center" scope="row" ><a href="{{ path('app.manager.show', {nom: shifts.employe.nom }) }}"> {{ shifts.employe.nom }} {{ shifts.employe.prenom }} </a></th>
+                <td class="text-center">{{ shifts.chantier }}</td>
+                <td class="text-center">{{ shifts.heureDeDebut|date('H:i') }}</td>
+                <td class="text-center">{{ shifts.heureDeFin|date('H:i') }}</td>
+                <td class="text-center">{{ shifts.heuresNormales }}</td>
+                <td class="text-center">{{ shifts.heuresSupp }}</td>
+                <td class="text-center">{{ shifts.heuresNuit }}</td>
+                <td class="text-center">{{shifts.ferie }}</td>
+                <td class="text-center">{{shifts.maladie}}</td>
+                <td class="text-center">{{shifts.cp}}</td>
+                <td class="text-center">{{ shifts.autre }}</td>
+                <td class="text-center">{{ shifts.nombreTotalHeures }}</td>
+                <td class="text-center"><a class="btn btn-outline-danger" href="{{ path('app.manager.shift.delete', {shift: shifts.id}) }}">
+                        Supprimer</a></td>
+                <td> <input id="checkdelete" type="checkbox" class="check-form" name="shifts[]" value="{{ shifts.id }}" onclick="checkChange()" /></td>
+            </tr>
+        {% endfor %}
+
+
+        </tbody>
+
+    </table>
+    </div>
+    </form>
+    <div class="navigation flex justify-content-end mb-8">
+        {{ knp_pagination_render(shifts) }}
+    </div>
+</body>
+    <script>
+        var checkboxes = $("input[id='checkdelete']"),
+            submitButt = $("button[id='checkbutton']");
+
+
+
+    const selectAll = document.querySelector('.select-all');
+    const allCheckbox = document.querySelectorAll('.check-form');
+    let listBoolean = [];
+
+    allCheckbox.forEach(item =>{
+        item.addEventListener('change', function () {
+            allCheckbox.forEach(i =>{
+                listBoolean.push(i.checked);
+            })
+            if(listBoolean.includes(false)) {
+                selectAll.checked = false;
+            } else {
+                selectAll.checked = true;
+            }
+                listBoolean = []
+        })
+    })
+
+    selectAll.addEventListener('change', function (){
+        if(this.checked) {
+            allCheckbox.forEach(i => {
+                i.checked = true;
+                submitButt.attr("disabled", !checkboxes.is(":checked"));
+            })
+        } else {
+            allCheckbox.forEach(i => {
+                i.checked = false;
+                submitButt.attr("disabled", !checkboxes.is(":checked"));
+            })
+        }
+    })
+
+        checkboxes.click(function() {
+            submitButt.attr("disabled", !checkboxes.is(":checked"));
+        });
+</script>
+
+
+
+{% endblock %}
+
+

@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Se connecter!{% endblock %}
+
+{% block body %}
+    <style>
+        @media (max-width: 600px){
+            .login{
+                background-image:url('{{ asset('build/imagemobile/loginmobile.jpg') }}');
+                overflow-x:hidden;
+                background-repeat: no-repeat;
+            }
+        }
+        @media (min-width: 599px) {
+
+            .login{
+                background-image: url('{{ asset('build/imagemobile/logindesktop.jpg') }}');
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: cover;
+            }
+        }
+
+    </style>
+    <body class="login">
+        <form class="form_container" method="post">
+
+            {% if error %}
+                <div class="alert alert-danger mt-0 ">Identifiant ou mot de passe invalide</div>
+            {% endif %}
+
+            {% if app.user %}
+                <div class="mb-3">
+                    You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                </div>
+            {% endif %}
+
+            <h3 class="h3 font-weight-normal">Se connecter</h3>
+            <label for="inputUsername">Utilisateur</label>
+            <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
+            <label for="inputPassword">Mot de passe</label>
+            <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+
+            <input type="hidden" name="_csrf_token"
+                   value="{{ csrf_token('authenticate') }}"
+            >
+
+            <button class="btn btn-lg btn-warning connexion" type="submit">
+                Connexion
+            </button>
+        </form>
+    </body>
+
+{% endblock %}

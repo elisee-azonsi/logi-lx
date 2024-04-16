@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title  %}Pointage{% endblock %}
+
+{% block body %}
+    <style>
+        @media (max-width: 600px){
+            body{
+                background-image:url('{{ asset('build/imagemobile/planningmobile.jpg') }}');
+                overflow-x:hidden;
+                background-size: cover;
+            }
+        }
+        @media (min-width: 599px) {
+            body{
+                background-image: url('{{ asset('build/imagemobile/planningdesktop.jpg') }}');
+            }
+        }
+    </style>
+    <body class="form-body">
+    {% for successMessage in app.flashes('success') %}
+        <div class=" text-center">
+            <div class="text-center">
+                <div class="alert alert-success justify-content-center">
+                    {{ successMessage| raw}}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div class="container">
+        <form class="shift-form" method="post">
+        {{ form_start(form, {'method': 'post'}) }}
+            <div>
+                {{ form_row(form.date) }}
+                {{ form_row(form.employe) }}
+                {{ form_row(form.chantier) }}
+                <div class="row">
+                    <div class="col">
+                        {{ form_row(form.heure_de_debut) }}
+                    </div>
+                    <div class="col">
+                        {{ form_row(form.heure_de_fin) }}
+                    </div>
+                </div>
+                {{ form_row(form.heures_normales) }}
+                {{ form_row(form.heures_nuit) }}
+                {{ form_row(form.heures_supp) }}
+                {{ form_row(form.ferie) }}
+                {{ form_row(form.maladie) }}
+                {{ form_row(form.cp) }}
+                {{ form_row(form.autre) }}
+            </div>
+
+            {{ form_end(form) }}
+
+
+        </form>
+    </div>
+    </body>
+
+
+{% endblock %}
+

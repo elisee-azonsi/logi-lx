@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Inscription {% endblock %}
+
+{% block body %}
+
+    <style>
+        @media (max-width: 600px){
+            body{
+                background-image:url('{{ asset('build/imagemobile/planningmobile.jpg') }}');
+                overflow-x:hidden;
+            }
+        }
+        @media (min-width: 599px) {
+            body{
+                background-image: url('{{ asset('build/imagemobile/planningdesktop.jpg') }}');
+                background-size: cover;
+            }
+        }
+    </style>
+
+    <body class="form-body">
+    {% for successMessage in app.flashes('success') %}
+        <div class=" text-center">
+            <div class="text-center">
+                <div class="alert alert-success justify-content-center">
+                    {{ successMessage| raw}}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+<div class="container">
+
+    <form class="shift-form" method="post">
+        <h3>Ajouter un nouveau membre</h3>
+            {{ form_start(form) }}
+
+            {{ form_end(form) }}
+    </form>
+</div>
+    </body>
+
+{% endblock %}

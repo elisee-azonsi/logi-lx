@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}{{ employe.nom }} {{ employe.prenom }}{% endblock %}
+
+
+{% block body %}
+    <h1 style="text-align: center">FEUILLE DE TEMPS HEBDOMADAIRE</h1>
+    {% include 'manager/_search_data.html.twig' %}
+    <h3 class="m-md-2">Employé: {{ employe.nom }} {{ employe.prenom }} </h3>
+    <a class="float-right mr-2 mb-4 btn btn-warning " href="{{ path('app.manager.delete', { id:employe.id }) }}"> Supprimer Employé </a>
+    <button type="button" class=" ml-2 btn btn-outline-success " onclick="ExportToExcel('xlsx')"><i class="fa-sharp fa-solid fa-file-excel"></i>Exporter sur Excel</button>
+    <div class="table-responsive">
+    <table border="1" class="table table-bordered border-warning table-striped" id="excel-table">
+        <thead>
+        <tr>
+            <th class="text-center" scope="col">DATE</th>
+            <th class="text-center" scope="col">CHANTIER</th>
+            <th class="text-center" scope="col">H. DE DEBUT</th>
+            <th class="text-center" scope="col">H. DE FIN</th>
+            <th class="text-center" scope="col">H. NORMALES</th>
+            <th class="text-center" scope="col">H. SUPP.</th>
+            <th class="text-center" scope="col">H. NUIT</th>
+            <th class="text-center" scope="col">DIMANCHE+<br>FERIE</th>
+            <th class="text-center" scope="col">Maladie</th>
+            <th class="text-center" scope="col">CP</th>
+            <th class="text-center" scope="col">Autre</th>
+            <th class="text-center" scope="col">NOMBRE TOTAL<br> D'HEURES</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set sumHN = 0 %}
+        {% set sumHS = 0 %}
+        {% set sumHDN = 0 %}
+        {% set sumDF = 0 %}
+        {% set sumM = 0 %}
+        {% set sumCP = 0 %}
+        {% set sumA = 0 %}
+        {% set sum = 0 %}
+        {% for shifts in shift|reverse %}
+            {% if shifts.employe.nom  == employe.nom %}
+                {% set sumHN = sumHN + shifts.heuresNormales %}
+                {% set sumHS = sumHS + shifts.heuresSupp %}
+                {% set sumHDN = sumHDN + shifts.heuresNuit%}
+                {% set sumDF = sumDF + shifts.ferie %}
+                {% set sumM = sumM + shifts.maladie %}
+                {% set sumCP = sumCP + shifts.cp %}
+                {% set sumA = sumA + shifts.autre %}
+                {% set sum = sum + shifts.nombreTotalHeures %}
+            <tr>
+                <td class="text-center">{{ shifts.date|date('d/m/Y') }}</td>
+                <td class="text-center">{{ shifts.chantier }}</td>
+                <td class="text-center">{{ shifts.heureDeDebut|date('H:i') }}</td>
+                <td class="text-center">{{ shifts.heureDeFin|date('H:i') }}</td>
+                <td class="text-center" >{{ shifts.heuresNormales }}</td>
+                <td class="text-center">{{ shifts.heuresSupp }}</td>
+                <td class="text-center">{{ shifts.heuresNuit }}</td>
+                <td class="text-center">{{shifts.ferie }}</td>
+                <td class="text-center">{{shifts.maladie}}</td>
+                <td class="text-center">{{shifts.cp}}</td>
+                <td class="text-center">{{ shifts.autre }}</td>
+                <td class="text-center">{{ shifts.nombreTotalHeures }}</td>
+            </tr>
+            {% endif %}
+
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <th class="text-end" colspan="4">NOMBRE TOTAL D'HEURES</th>
+        <th class="text-center"> {{ sumHN }}</th>
+        <th class="text-center"> {{ sumHS }}</th>
+        <th class="text-center"> {{ sumHDN }}</th>
+        <th class="text-center"> {{ sumDF }}</th>
+        <th class="text-center"> {{ sumM }}</th>
+        <th class="text-center"> {{ sumCP }}</th>
+        <th class="text-center"> {{ sumA }}</th>
+        <th class="text-center"> {{ sum }}</th>
+        </tfoot>
+    </table>
+    </div>
+
+    <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+    <script>
+
+        function ExportToExcel(type, fn, dl) {
+            var elt = document.getElementById('excel-table');
+            var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+            return dl ?
+                XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+                XLSX.writeFile(wb, fn || ('MySheetName.' + (type || 'xlsx')));
+        }
+
+    </script>
+{% endblock %}
+
+

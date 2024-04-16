@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Accueil{% endblock %}
+{% block body %}
+    <style>
+        @media (max-width: 600px){
+            .home_manager{
+                background-image:url('{{ asset('build/imagemobile/homemanagermobile.jpg') }}');
+                background-repeat: no-repeat;
+
+            }
+        }
+        @media (min-width: 599px) {
+            .home_manager{
+                background-image: url('{{ asset('build/imagemobile/desktophomemanager.jpg') }}');
+                background-size: cover;
+                background-repeat: no-repeat;
+                overflow-x: hidden;
+            }
+        }
+    </style>
+
+<body class="home_manager">
+
+<div class="search-form">{% include'manager/_search_data.html.twig' %} </div>
+
+<div class="row row-cols" style="justify-content: center">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Feuille de Présence</h5>
+            <a href="{{ path('app.manager.show.all') }}" class = "btn btn-warning" >Cliquer ici</a>
+        </div>
+    </div>
+    {% for employe in employe %}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{employe.nom}} {{employe.prenom}}</h5>
+                <a href="{{ path('app.manager.show', {nom: employe.nom }) }}" class = "btn btn-warning"  >Cliquer ici</a>
+            </div>
+        </div>
+    {% endfor %}
+
+</div>
+
+
+</body>
+
+
+
+{% endblock %}

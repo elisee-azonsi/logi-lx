@@ -1,0 +1,13 @@
+<form class="form-rechercher">
+    {{ form_start(form) }}
+    <div class="form-inline ">
+        <div class="row input-group ">
+            <div class="input-group relative flex flex-wrap items-stretch w-full mb-4">
+            {{ form_widget(form.q)}}
+            {{ form_errors(form.q) }}
+            {{ form_row(form.rechercher)}}
+            </div>
+        </div>
+    </div>
+    {{ form_end(form) }}
+</form>
